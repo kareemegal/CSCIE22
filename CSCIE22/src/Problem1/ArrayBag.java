@@ -1,10 +1,11 @@
-package bag;
+package Problem1;
 
-/* ArrayBag.java
+/* 
+ * ArrayBag.java
  * 
- * Author:          Computer Science E-119 staff
- * Modified by:     <your name>, <your e-mail address>
- * Date modified:   <current date>
+ * Author:          Computer Science E-22 staff
+ * Modified by:     Abdulkarim Egal, kegal@g.harvard.edu
+ * Date modified:   9/21/2016
  */
 
 import java.util.*;
@@ -70,7 +71,7 @@ public class ArrayBag implements Bag {
         for (int i = 0; i < numItems; i++) {
             if (items[i] != null && items[i].equals(item)) {
                 // Shift the remaining items left by one.
-                System.arr3aycopy(items, i+1, items, i, numItems-i-1);
+                System.arraycopy(items, i+1, items, i, numItems-i-1);
                 items[numItems-1] = null;
                 
                 numItems--;
@@ -85,14 +86,24 @@ public class ArrayBag implements Bag {
      * contains - returns true if the specified item is in the Bag, and
      * false otherwise.
      */
+    @Override
     public boolean contains(Object item) {
-        for (int i = 0; i < numItems; i++) {
+        for (int i = 0; i < numItems; i++) 
+        {
+        	System.out.println("Item = " + item);
+        	System.out.println("Items = " + items[i]);
+        	System.out.println(items[i].equals(item));
+        	
             if (items[i] != null && items[i].equals(item))
+            {
+            	System.out.println("Test: " + i);
                 return true;
+            }
         }
         
         return false;
     }
+    
     
     /**
      * containsAll - does this ArrayBag contain all of the items in
@@ -112,26 +123,6 @@ public class ArrayBag implements Bag {
     }
     
     /**
-     * isSorted - Returns true if sorted 
-     Returns false if not sorted
-     */
-    public static boolean isSorted (int[] arr) {
-    	
-        if (otherBag == null || otherBag.numItems() == 0)
-            return false;
-        
-        Object[] otherItems = otherBag.toArray();
-        
-        for (int i = 0; i < otherItems.length; i++) {
-            if (!contains(otherItems[i]))
-                return false;
-        }
-        
-        return true;
-    }
-
-    
-    /**
      * numItems - returns the number of items in the Bag.
      */
     public int numItems() {
@@ -144,11 +135,7 @@ public class ArrayBag implements Bag {
     public Object grab() {
         if (numItems == 0)
             throw new NoSuchElementException("the bag is empty");
-        
-        System.out.println("numbItems " + numItems);
         int whichOne = (int)(Math.random() * numItems);
-        
-        System.out.println("Grapped Item Reference " + whichOne);
         return items[whichOne];
     }
     
@@ -175,7 +162,108 @@ public class ArrayBag implements Bag {
         return str;
     }
     
-    /* Test the ArrayBag implementation. */
+    /**
+     * 
+     * roomleft method returns the number of additional items that the called ArrayBag has room to store. 
+     * 
+     * roomLeft - returns how many more items can be filled in the bag
+     */
+    public int roomLeft(){
+    	
+    	return (items.length - numItems);
+    }
+    
+    /**
+     * isEmpty returns true if the called ArrayBag is empty, and false otherwise
+     */
+    public boolean isEmpty(){
+    	
+    	if(numItems == 0) return true;
+    	
+    	else return false;
+    }
+    
+    /**
+     * increaseCapacity method increases the maximum capacity of the called ArrayBag by the specified amount.
+     * Pass into the method the amount to add. 
+     */
+    public void increaseCapacity(int increaseCapacity){
+    	
+    	//Check to make sure the amount to be increased is greater than 0.
+    	//Throw an error if the amount less than 0.
+    	if (increaseCapacity < 0) throw new IllegalArgumentException("Increment must be > 0");
+    	
+    	if (increaseCapacity == 0) return;
+    	
+    	//temporary array to hold copy of the current Objects in Bag
+    	
+    	Object[] tempItems = new Object[numItems + increaseCapacity];
+    	
+    	System.arraycopy(items, 0, tempItems, 0, numItems);
+    	
+    	items = tempItems;
+    	System.out.println("New array size:" + items.length);
+    }
+    
+    /**
+     * addItmes - Adds all the items from given bag to the calling ArrayBag.
+     * @param other
+     */
+    public boolean addItems(Bag other){
+    	//Error checking
+    	if (other == null) throw new IllegalArgumentException();
+    	if (other.isEmpty()) return true;			//Passed bag is empty. So no items to add.
+    	if (roomLeft() < other.numItems()) return false;    //Not enough room to add all objects of other bag.
+    	Object[] otherItems = other.toArray();
+    	for(int i = 0; i<otherItems.length; i++){
+    		add(otherItems[i]);
+    	}
+    	return true;
+    }
+    
+    /**
+     * intersectionWith - Returns bag with all common items of both the bags
+     * @param other
+     */
+    public Bag intersectionWith(Bag other){
+    	
+    	System.out.println("Other:  " + other);
+    	
+    	if (other == null) throw new IllegalArgumentException("NOthing to put in the bag");
+    	
+    	// Initialize ArrayBag
+    	// Set the size to smallest bag size which is zero
+    	int size = 0;
+    	
+      
+    	
+    	//Compare if bag1 size is same or less than bag2 size
+    	//If true set the size of the new arraybag to bag1 size
+    	if (this.numItems() <= other.numItems())
+    		size = numItems;
+    	
+    	//else set the size to bag2 size
+    	else size = other.numItems();
+    	
+    	ArrayBag commonItems = new ArrayBag(size);
+    	
+    	//Add only common items that are don't repeat to the returning ArrayBag.
+    	Object[] otherItems = other.toArray();
+    
+    	//Loop for checking if an element contains in bag1
+    	for(int i = 0; i<otherItems.length; i++){
+    		
+    		System.out.println("Other Items" + otherItems[i]);
+    		
+    		//If Item is found, add it to the commonItems bag 
+    		if(other.contains(otherItems[i]) && (!commonItems.contains(otherItems[i])))
+    			commonItems.add(otherItems[i]);
+    	}//End of for Loop
+    	
+    	return commonItems; //Return CommonItems Object
+    }
+
+	/* Test the ArrayBag implementation. */
     public static void main(String[] args) {
         // Create a Scanner object for user input.
         Scanner in = new Scanner(System.in);
@@ -184,6 +272,7 @@ public class ArrayBag implements Bag {
         System.out.print("Size of bag 1: ");
         int size = in.nextInt();
         Bag bag1 = new ArrayBag(size);
+        Bag bag2 = new ArrayBag(8);
         in.nextLine();    // consume the rest of the line
         
         // Read in strings, add them to bag1, and print out bag1.
@@ -213,7 +302,42 @@ public class ArrayBag implements Bag {
         itemStr = in.nextLine();
         if (bag1.contains(itemStr))
             bag1.remove(itemStr);
-        System.out.println("bag 1 = " + bag1);
+        System.out.println("Items in bag1 = " + bag1);
         System.out.println();
+        
+        //Get how many more items can be put in the Bag
+        System.out.println("Room left for " + bag1.roomLeft() + " more items.");
+        
+        //Check if bag is empty
+        System.out.println("Is bag empty? true/false: " + bag1.isEmpty());
+        
+        // Prompt user to increase the capacity
+        System.out.print("Increase the Capacity of the ArrayBag by: ");
+        int increaseCapacity = in.nextInt();
+        
+        //// Create an ArrayBag named bag1.
+        bag1.increaseCapacity(increaseCapacity);
+        
+      //Get how many more items can be put in the Bag
+        System.out.println("Room left for " + bag1.roomLeft() + " more items.");
+        
+        //Check if bag is empty
+        System.out.println("Is bag empty? true/false: " + bag1.isEmpty());
+       
+        //Adding Items to Bag2
+        bag2.add(2);
+        bag2.add(3);
+        bag2.add(4);
+        bag2.add(5);
+        bag2.add(5);
+        bag2.add(6);
+        bag2.add(7);
+        
+        Bag intersectionWith = bag1.intersectionWith(bag2);
+        //Check if bag is empty
+        System.out.println("Common Items between bag1 and bag1 " + intersectionWith);
+       
+        System.out.println("Items in bag 1 = " + bag1);
+        System.out.println("Items in bag 2 = " + bag2);
     }
 }

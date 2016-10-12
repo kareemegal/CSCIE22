@@ -31,41 +31,42 @@ public class sort
 	}
 	
 	public static int mostFrequentValue(int[] arr)
-	{
-	  int count = 1;
-	  int tempCount;
-	  int mostFrequentValue = arr[0];		//
-	  int temp = 0;
-	  
-	  //
-	  for (int i = 0; i < (arr.length - 1); i++){
-		  temp = arr[i];
-		  tempCount = 0;
-		  
-		  //
-		  for (int j = 1; j < arr.length; j++)
-		  {
-			  if (temp == arr[j]){
-				  tempCount++;
-			  }
-			  if (tempCount > count){
-				  mostFrequentValue = temp;
-			  }
-			  
-			  count = tempCount;
-			  
-		  }
-		  
-	  }
-	  
-	  return mostFrequentValue;
-	  
-	}
+	 {
+	   int count = 1; // Hold number times Element is found in the Array
+	   int tempCount; //Place holders for number of times Element is found in the Array
+	   int mostFrequentElement = arr[0];  //Start with the first element in the Array
+	   int element = 0;	//holds the second element in the row
+	   
+	   //Loop to get Elements 
+	   for (int i = 0; i < (arr.length - 1); i++){
+	    element = arr[i]; //
+	    tempCount = 0;
+	    
+	    //Loop to check if there is a match and keep accounting of number of elements found
+	    for (int j = 1; j < arr.length; j++)
+	    {
+	     if (element == arr[j])
+	      tempCount++; // Increment the temporary 
+	    } //End 2nd loop (for)
+	    
+	    //Check if there is a new mostFrequentValue
+	    if (tempCount > count)
+	    {
+	      mostFrequentElement = element;
+	      count = tempCount;
+	    }
+	    
+	   }//End 1st Loop (for)
+	   
+	   return mostFrequentElement;
+	   
+	 }// end class ArrayIns
+	 
 	
 	 /* Test the isSorted implementation. */
 	public static void main(String[] args) 
 	{
-	  int[] a = {1, 2, 3, 3, 8, 8, 8, 8, 11, 11, 11, 14, 19, 19};
+	  int[] a = {1, 2, 3, 3, 8, 8, 8, 11, 11, 11, 11, 14, 19, 19};
 	  
 	  if (isSorted(a))
 	  {
